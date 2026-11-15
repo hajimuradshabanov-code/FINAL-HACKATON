@@ -1,0 +1,9 @@
+# never upload secrets or local-only files
+.env
+.env.*
+!.env.example
+node_modules
+dist
+assets-src
+.vscode
+.git

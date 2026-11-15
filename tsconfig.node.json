@@ -1,0 +1,18 @@
+// Type-checks Node-side code (scripts/, tests/) and the src/ modules they import.
+// Browser-only settings stay in tsconfig.json.
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "allowImportingTsExtensions": true,
+    "types": ["node", "vite/client"]
+  },
+  "include": ["scripts/**/*.ts", "tests/**/*.ts", "api/**/*.ts", "vite.config.ts"]
+}

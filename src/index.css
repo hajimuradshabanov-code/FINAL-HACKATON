@@ -1,0 +1,287 @@
+@import '@fontsource-variable/archivo/wdth.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Archivo Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --color-rust: #c1440e;
+  --color-char: #1e1a17;
+  --color-ink: #f2e9e1;
+  --color-taupe: #a8978a;
+  --color-alert: #ff4b3e;
+  --color-ok: #8fd6a4;
+  --color-warn: #f2b04c;
+}
+
+:root {
+  --ink: #f2e9e1;
+  --taupe: #a8978a;
+  --rust: #c1440e;
+  --lava: #ff6a1f;
+  --alert: #ff4b3e;
+  --ok: #8fd6a4;
+  --warn: #f2b04c;
+  /* data provenance: kept apart from the status colours above, so "simulated" never reads as "warning" */
+  --sim: #c9a8ff;
+  --model: #7fc8f8;
+  --glass: rgba(26, 20, 17, 0.55);
+  --hair: rgba(255, 255, 255, 0.15);
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  margin: 0;
+  background: #14100e;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+button {
+  font: inherit;
+  color: inherit;
+}
+:focus-visible {
+  outline: 2px solid var(--lava);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ---------- type ---------- */
+.display {
+  font-family: var(--font-sans);
+  font-stretch: 125%;
+  font-weight: 200;
+  letter-spacing: -0.01em;
+}
+.label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--taupe);
+  font-weight: 400;
+}
+.num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
+.unit {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--taupe);
+}
+
+/* ---------- surfaces ---------- */
+.glass {
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+  backdrop-filter: blur(18px) saturate(1.15);
+  border: 1px solid var(--hair);
+  border-radius: 16px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.glass[data-status='warning'] {
+  border-color: rgba(242, 176, 76, 0.55);
+}
+.glass[data-status='critical'] {
+  border-color: var(--alert);
+  box-shadow: 0 0 0 1px rgba(255, 75, 62, 0.35), 0 0 28px rgba(255, 75, 62, 0.22);
+}
+
+.grain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.22;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+.sq-btn {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  border: 1px solid var(--hair);
+  background: rgba(20, 15, 12, 0.7);
+  cursor: pointer;
+  transition: transform 0.15s, background 0.2s;
+}
+.sq-btn:active {
+  transform: scale(0.94);
+}
+.sq-btn.red {
+  background: var(--rust);
+  border-color: rgba(255, 160, 110, 0.5);
+}
+
+/* ---------- data provenance: simulated / modelled / real ----------
+   Every card that shows data carries a strip along its top edge:
+   hatched violet = simulated, solid blue = modelled from real data, solid white = measured. */
+.src {
+  position: relative;
+}
+.src::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 16px;
+  right: 16px;
+  height: 3px;
+  border-radius: 0 0 3px 3px;
+  pointer-events: none;
+}
+.src-sim::before {
+  background: repeating-linear-gradient(135deg, var(--sim) 0 5px, transparent 5px 10px);
+}
+.src-model::before {
+  background: var(--model);
+}
+.src-real::before {
+  background: var(--ink);
+}
+.src-none::before {
+  background: rgba(255, 255, 255, 0.22);
+}
+.glass.src-sim {
+  border-style: dashed;
+}
+.glass.src-sim:not([data-status='warning']):not([data-status='critical']) {
+  border-color: color-mix(in srgb, var(--sim) 42%, transparent);
+}
+
+.stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  line-height: 1.5;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+}
+.stamp-sim {
+  color: var(--sim);
+  border: 1px dashed var(--sim);
+  background: repeating-linear-gradient(135deg, rgba(201, 168, 255, 0.16) 0 4px, transparent 4px 8px);
+}
+.stamp-model {
+  color: var(--model);
+  border-color: color-mix(in srgb, var(--model) 70%, transparent);
+  background: rgba(127, 200, 248, 0.08);
+}
+.stamp-real {
+  color: #14100e;
+  background: var(--ink);
+  border-color: var(--ink);
+}
+.stamp-none {
+  color: var(--taupe);
+  border-color: var(--hair);
+}
+
+/* ---------- status colouring ---------- */
+[data-status='normal'] {
+  --s: var(--ok);
+}
+[data-status='warning'] {
+  --s: var(--warn);
+}
+[data-status='critical'] {
+  --s: var(--alert);
+}
+
+/* ---------- animation ---------- */
+@keyframes pulse-dot {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--s, var(--ok)) 70%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 9px transparent;
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes print-in {
+  from {
+    opacity: 0;
+    transform: scale(2.1);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+.rise {
+  animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 80ms);
+}
+.pulse-dot {
+  animation: pulse-dot 1.6s ease-out infinite;
+}
+.blink {
+  animation: blink 1s steps(2) infinite;
+}
+
+/* the newest footprint is pressed into the ground */
+.print-in {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: print-in 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.scroll-hide {
+  scrollbar-width: none;
+}
+.scroll-hide::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

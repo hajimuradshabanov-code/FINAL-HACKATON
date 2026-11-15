@@ -1,0 +1,18 @@
+# dependencies & build output
+node_modules
+dist
+*.tsbuildinfo
+coverage
+
+# environment / secrets (VITE_NASA_API_KEY etc.)
+.env
+.env.*
+!.env.example
+*.local
+
+# logs & OS noise
+*.log
+.DS_Store
+Thumbs.db
+
+.vercel
